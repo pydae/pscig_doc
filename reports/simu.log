@@ -32,12 +32,8 @@ nbclient.exceptions.CellTimeoutError: A cell timed out while it was being execut
 The message was: Cell execution timed out.
 Here is a preview of the cell contents:
 -------------------
-P_GR = 5e6
-Q_GR = 5e6
-
-pr.initialize([{'P_GR1': P_GR, 'Q_GR1': Q_GR,
-                'P_GR2': P_GR, 'Q_GR2': Q_GR,
-                'P_GR3': P_GR, 'Q_GR3': Q_GR,
-                'P_GR4': P_GR, 'Q_GR4': Q_GR}], 1) 
+['P_GR = 5e6', 'Q_GR = 0e6', '', "pr.initialize([{'P_GR1': P_GR, 'Q_GR1': Q_GR,", "                'P_GR2': P_GR, 'Q_GR2': Q_GR,"]
+...
+['    ax.grid()', "    ax.legend(loc='best',ncol=3)", '    ax.set_xlim([0,10])', '', "ax.set_xlabel('Time (s)')"]
 -------------------
 
