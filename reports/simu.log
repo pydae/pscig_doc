@@ -34,6 +34,6 @@ Here is a preview of the cell contents:
 -------------------
 ['P_GR = 5e6', 'Q_GR = 0e6', '', "pr.initialize([{'P_GR1': P_GR, 'Q_GR1': Q_GR,", "                'P_GR2': P_GR, 'Q_GR2': Q_GR,"]
 ...
-['    ax.grid()', "    ax.legend(loc='best',ncol=3)", '    ax.set_xlim([0,10])', '', "ax.set_xlabel('Time (s)')"]
+["    ax.legend(loc='best',ncol=3)", '    ax.set_xlim([0,10])', '', "ax.set_xlabel('Time (s)')", 'fig.align_ylabels()']
 -------------------
 
