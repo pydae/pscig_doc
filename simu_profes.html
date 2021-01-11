@@ -56,7 +56,6 @@
     <script async="async" src="_static/sphinx-thebe.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Simulador de sistema de potencia" href="intro.html" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en" />
@@ -93,9 +92,9 @@
   </a>
  </li>
 </ul>
-<ul class="current nav sidenav_l1">
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+<ul class="nav sidenav_l1">
+ <li class="toctree-l1">
+  <a class="reference internal" href="simu.html">
    Ejemplo de simulación
   </a>
  </li>
@@ -139,7 +138,7 @@
         <!-- ipynb file if we had a myst markdown file -->
         
         <!-- Download raw file -->
-        <a class="dropdown-buttons" href="_sources/simu.ipynb"><button type="button"
+        <a class="dropdown-buttons" href="_sources/simu_profes.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Download source file" data-toggle="tooltip"
                 data-placement="left">.ipynb</button></a>
         <!-- Download PDF via print -->
@@ -159,7 +158,7 @@
                 data-toggle="tooltip" data-placement="left" title="Source repository"><i
                     class="fab fa-github"></i>repository</button></a>
         <a class="issues-button"
-            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fsimu.html&body=Your%20issue%20content%20here."><button
+            href="https://github.com/executablebooks/jupyter-book/issues/new?title=Issue%20on%20page%20%2Fsimu_profes.html&body=Your%20issue%20content%20here."><button
                 type="button" class="btn btn-secondary topbarbtn" data-toggle="tooltip" data-placement="left"
                 title="Open an issue"><i class="fas fa-lightbulb"></i>open issue</button></a>
         
@@ -180,7 +179,7 @@
         aria-label="Launch interactive content"><i class="fas fa-rocket"></i></button>
     <div class="dropdown-buttons">
         
-        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/simu.ipynb"><button type="button"
+        <a class="binder-button" href="https://mybinder.org/v2/gh/executablebooks/jupyter-book/master?urlpath=tree/docs/simu_profes.ipynb"><button type="button"
                 class="btn btn-secondary topbarbtn" title="Launch Binder" data-toggle="tooltip"
                 data-placement="left"><img class="binder-button-logo"
                     src="_static/images/logo_binder.svg"
@@ -213,8 +212,8 @@
     </a>
    </li>
    <li class="toc-h3 nav-item toc-entry">
-    <a class="reference internal nav-link" href="#control-de-tension-coordinado-statcom-generadores">
-     Control de tensión coordinado STATCOM+Generadores
+    <a class="reference internal nav-link" href="#control-de-tension-utilizando-coordinando-generadores-y-statcom">
+     Control de tensión utilizando coordinando generadores y STATCOM
     </a>
    </li>
   </ul>
@@ -1415,8 +1414,6 @@
 </div>
 </div>
 </div>
-<p>El sistema tiene entradas, estados y salidas. Siendo los más importantes lo que se muestran en la siguiente figura:</p>
-<p><img alt="title" src="_images/proyecto_4cig_pydae.svg" /></p>
 <p>Los parametros de las líneas y transformadores deben ser adaptados, para ello se puede utilizar la herramienta <code class="docutils literal notranslate"><span class="pre">change_line</span></code> del modulo <code class="docutils literal notranslate"><span class="pre">pydae.grid_tools</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -1481,110 +1478,13 @@ p_m_ref_GRI = -0.19
 </div>
 </div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">pydae.grid_tools</span></code> también aporta métodos para extraer información del sistema resuelto. Por ejemplo se puede obtener la corriente o la potencia compleja por una línea:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gt</span><span class="o">.</span><span class="n">get_line_i</span><span class="p">(</span><span class="n">pr</span><span class="p">,</span><span class="s1">&#39;POI&#39;</span><span class="p">,</span><span class="s1">&#39;GRI&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(223.95663836147085-64.60038474431991j)
-</pre></div>
-</div>
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">gt</span><span class="o">.</span><span class="n">get_line_s</span><span class="p">(</span><span class="n">pr</span><span class="p">,</span><span class="s1">&#39;POI&#39;</span><span class="p">,</span><span class="s1">&#39;GRI&#39;</span><span class="p">)</span> 
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(19317132.164571136+18061567.84765373j)
-</pre></div>
-</div>
-</div>
-</div>
-<p>Para poder simular la planta y un controlador se pueden emplear los siguientes 3 pasos:</p>
-<ol class="simple">
-<li><p>Inicialización (initialize)</p></li>
-<li><p>Correr hasta un determinado tiempo (run)</p></li>
-<li><p>Postprocesar (post)</p></li>
-</ol>
-<p>El paso 2 se puede ejecutar repetitivamante para ir cambiando las entradas del sistema a lo largo del tiempo. A continuación se simula hasta ts= 1 s, se realiza un cambio en la potencia reactiva del STATCOM (<code class="docutils literal notranslate"><span class="pre">Q_PMV</span></code>) y se simula hasta t = 10 s:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pr</span><span class="o">.</span><span class="n">initialize</span><span class="p">([{</span><span class="s1">&#39;Q_PMV&#39;</span><span class="p">:</span><span class="mf">0.0</span><span class="p">}],</span><span class="mi">1</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;V_POI antes del cambio: </span><span class="si">{</span><span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">pr</span><span class="o">.</span><span class="n">run</span><span class="p">([{</span><span class="s1">&#39;t_end&#39;</span><span class="p">:</span><span class="mf">1.0</span><span class="p">}])</span>
-<span class="n">pr</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="s1">&#39;Q_PMV&#39;</span><span class="p">,</span><span class="mf">10e6</span><span class="p">)</span>
-<span class="n">pr</span><span class="o">.</span><span class="n">run</span><span class="p">([{</span><span class="s1">&#39;t_end&#39;</span><span class="p">:</span><span class="mf">10.0</span><span class="p">}])</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;V_POI después del cambio: </span><span class="si">{</span><span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="n">pr</span><span class="o">.</span><span class="n">post</span><span class="p">();</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>V_POI antes del cambio: 1.0369640239742806
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>V_POI después del cambio: 1.0545851136728754
-</pre></div>
-</div>
-</div>
-</div>
-<p>Al ser una simulación en el dominio del tiempo luego de terminar la simulación con <code class="docutils literal notranslate"><span class="pre">pr_post()</span></code>, se puede graficar la evolución de la tensión y de la potencia reactiva:</p>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig0</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$V_</span><span class="si">{POI}</span><span class="s1">$&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;Q_PMV&#39;</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{PMV}</span><span class="s1">$&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage (p.u.)&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Reactive Power (Mvar)&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">UnboundLocalError</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">9</span><span class="o">-</span><span class="mi">794757</span><span class="n">c5a77b</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> 
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$V_</span><span class="si">{POI}</span><span class="s1">$&#39;</span><span class="p">)</span>
-<span class="ne">----&gt; </span><span class="mi">4</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;Q_PMV&#39;</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{PMV}</span><span class="s1">$&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage (p.u.)&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Reactive Power (Mvar)&#39;</span><span class="p">)</span>
-
-<span class="nn">~\anaconda3\envs\workenv\lib\site-packages\pydae\systems\ier\proyecto.py</span> in <span class="ni">get_values</span><span class="nt">(self, name)</span>
-<span class="g g-Whitespace">    </span><span class="mi">549</span>             <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">[:,</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span>
-<span class="g g-Whitespace">    </span><span class="mi">550</span> 
-<span class="ne">--&gt; </span><span class="mi">551</span>         <span class="k">return</span> <span class="n">values</span>
-<span class="g g-Whitespace">    </span><span class="mi">552</span> 
-<span class="g g-Whitespace">    </span><span class="mi">553</span>     <span class="k">def</span> <span class="nf">get_mvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">names</span><span class="p">):</span>
-
-<span class="ne">UnboundLocalError</span>: local variable &#39;values&#39; referenced before assignment
-</pre></div>
-</div>
-<img alt="_images/simu_17_1.svg" src="_images/simu_17_1.svg" /></div>
-</div>
 <div class="section" id="control-de-tension-del-poi">
 <h2>Control de tensión del POI<a class="headerlink" href="#control-de-tension-del-poi" title="Permalink to this headline">¶</a></h2>
-<p>Una función importante de un contralador PPC es el de controlar la tensión en una determinada barra, como puede ser la denominada POI en el diagrama de arriba. Con este objetivo el PPC medirá una tensión <code class="docutils literal notranslate"><span class="pre">V_POI</span></code> y enviara la referencia de reactiva al STATCOM (<code class="docutils literal notranslate"><span class="pre">Q_PMV</span></code>) y a los generadores (<code class="docutils literal notranslate"><span class="pre">Q_GR1</span></code>, <code class="docutils literal notranslate"><span class="pre">Q_GR2</span></code>, <code class="docutils literal notranslate"><span class="pre">Q_GR3</span></code> y <code class="docutils literal notranslate"><span class="pre">Q_GR4</span></code>).</p>
-<p>A continuación se presentan dos casos:</p>
-<ol class="simple">
-<li><p>Control de tensión utilizando solamente el STATCOM.</p></li>
-<li><p>Control de tensión coordinado STATCOM+Generadores</p></li>
-</ol>
 <div class="section" id="control-de-tension-utilizando-solo-el-statcom">
 <h3>Control de tensión utilizando sólo el STATCOM<a class="headerlink" href="#control-de-tension-utilizando-solo-el-statcom" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inicialización del sistema</span>
-<span class="c1"># ==========================</span>
-
-<span class="n">P_GR</span> <span class="o">=</span> <span class="mf">5e6</span>
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P_GR</span> <span class="o">=</span> <span class="mf">5e6</span>
 <span class="n">Q_GR</span> <span class="o">=</span> <span class="mf">0e6</span>
 
 <span class="n">pr</span><span class="o">.</span><span class="n">initialize</span><span class="p">([{</span><span class="s1">&#39;P_GR1&#39;</span><span class="p">:</span> <span class="n">P_GR</span><span class="p">,</span> <span class="s1">&#39;Q_GR1&#39;</span><span class="p">:</span> <span class="n">Q_GR</span><span class="p">,</span>
@@ -1600,27 +1500,21 @@ p_m_ref_GRI = -0.19
 <span class="n">N_t</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
 <span class="n">N_x</span> <span class="o">=</span> <span class="mi">2</span>
 
-<span class="c1"># diseño del controlador</span>
+<span class="c1"># controller</span>
 <span class="n">K_p</span> <span class="o">=</span> <span class="o">-</span><span class="mf">20.0e6</span>
 <span class="n">K_i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">T_s</span><span class="o">*</span><span class="n">K_g</span><span class="p">)</span>
 
-<span class="c1"># condiciones iniciales</span>
+<span class="c1"># initial conditions</span>
 <span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">xi</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">Q_POI_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">V_POI_ref</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">)</span>
 
-<span class="c1"># vector para guardar estados, etc.</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="n">N_x</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="n">N_x</span><span class="p">))</span>
 <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
-
-
-<span class="c1"># Bucle de simulación</span>
-<span class="c1"># ===================</span>
-
 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-    <span class="n">out</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span>
-    <span class="n">out</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_POI_ref</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_POI_ref</span>
     
     <span class="k">if</span> <span class="n">t</span><span class="o">&gt;</span><span class="mf">1.0</span><span class="p">:</span>
         <span class="n">V_POI_ref</span> <span class="o">=</span> <span class="mf">1.05</span>
@@ -1637,19 +1531,17 @@ p_m_ref_GRI = -0.19
     
     <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span> 
 
-<span class="c1"># Post-procesado</span>
-<span class="c1"># ==============</span>
 <span class="n">pr</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
 
 <span class="n">fig1</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">out</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{POI}</span><span class="s1">^\star$&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">out</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{PMV}</span><span class="s1">^\star$&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{POI}</span><span class="s1">^\star$&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{PMV}</span><span class="s1">^\star$&#39;</span><span class="p">)</span>
 
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$V_</span><span class="si">{POI}</span><span class="s1">$&#39;</span><span class="p">)</span>
 
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Reactive Power (Mvar)&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">35</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">35</span><span class="p">])</span>
 
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage (p.u.)&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
@@ -1663,16 +1555,14 @@ p_m_ref_GRI = -0.19
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/simu_19_0.svg" src="_images/simu_19_0.svg" /></div>
+<img alt="_images/simu_profes_11_0.svg" src="_images/simu_profes_11_0.svg" /></div>
 </div>
 </div>
-<div class="section" id="control-de-tension-coordinado-statcom-generadores">
-<h3>Control de tensión coordinado STATCOM+Generadores<a class="headerlink" href="#control-de-tension-coordinado-statcom-generadores" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="control-de-tension-utilizando-coordinando-generadores-y-statcom">
+<h3>Control de tensión utilizando coordinando generadores y STATCOM<a class="headerlink" href="#control-de-tension-utilizando-coordinando-generadores-y-statcom" title="Permalink to this headline">¶</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Inicialización del sistema</span>
-<span class="c1"># ==========================</span>
-
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P_GR</span> <span class="o">=</span> <span class="mf">7e6</span>
 <span class="n">Q_GR</span> <span class="o">=</span> <span class="mf">0e6</span>
 <span class="n">S_GR</span> <span class="o">=</span> <span class="mf">8e6</span>
 
@@ -1689,11 +1579,11 @@ p_m_ref_GRI = -0.19
 <span class="n">N_t</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
 <span class="n">N_x</span> <span class="o">=</span> <span class="mi">2</span>
 
-<span class="c1"># diseño del controlador</span>
+<span class="c1"># controller</span>
 <span class="n">K_p</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0e7</span>
 <span class="n">K_i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">T_s</span><span class="o">*</span><span class="n">K_g</span><span class="p">)</span>
 
-<span class="c1"># condiciones iniciales</span>
+<span class="c1"># initial conditions</span>
 <span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">xi</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">Q_POI_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -1703,24 +1593,18 @@ p_m_ref_GRI = -0.19
 <span class="n">Q_GR4_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">Q_STATCOM_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
 <span class="n">V_POI_ref</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">)</span>
-
-<span class="c1"># vectores para guardar estados, etc.</span>
-<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
 <span class="n">Q_GR_store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
 <span class="n">Q_STATCOM_store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="n">N_x</span><span class="p">))</span>
 <span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="c1"># Bucle de simulación</span>
-<span class="c1"># ===================</span>
 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
-    <span class="n">out</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span>
-    <span class="n">out</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_POI_ref</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_POI_ref</span>
     
-    <span class="c1"># perturbaciones o cambios de referencia</span>
     <span class="k">if</span> <span class="n">t</span><span class="o">&gt;</span><span class="mf">1.0</span><span class="p">:</span>
         <span class="n">V_POI_ref</span> <span class="o">=</span> <span class="mf">1.05</span>
         
-    <span class="c1"># planta</span>
+    <span class="c1"># Plant</span>
     <span class="k">for</span> <span class="n">ig</span><span class="p">,</span><span class="n">q</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">),[</span><span class="n">Q_GR1_ref</span><span class="p">,</span><span class="n">Q_GR2_ref</span><span class="p">,</span><span class="n">Q_GR3_ref</span><span class="p">,</span><span class="n">Q_GR4_ref</span><span class="p">]):</span>
         <span class="n">P_GR</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;P_GR</span><span class="si">{</span><span class="n">ig</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
         <span class="n">Q_GR_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">S_GR</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">P_GR</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
@@ -1733,7 +1617,7 @@ p_m_ref_GRI = -0.19
     <span class="n">Q_STATCOM_store</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_STATCOM_ref</span>
     <span class="n">V_POI</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">)</span>
     
-    <span class="c1"># controlador (PPC)</span>
+    <span class="c1"># Controller</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">V_POI_ref</span> <span class="o">-</span> <span class="n">V_POI</span>
     <span class="n">xi</span> <span class="o">=</span> <span class="n">xi</span> <span class="o">+</span> <span class="n">T_s</span><span class="o">*</span><span class="n">error</span>
     <span class="n">Q_POI_ref</span> <span class="o">=</span> <span class="n">K_p</span><span class="o">*</span><span class="n">error</span> <span class="o">+</span> <span class="n">K_i</span><span class="o">*</span><span class="n">xi</span>
@@ -1751,20 +1635,18 @@ p_m_ref_GRI = -0.19
     
     <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span> 
 
-<span class="c1"># Post-procesado</span>
-<span class="c1"># ==============</span>
 <span class="n">pr</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
     
 <span class="n">fig2</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">out</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{POI}</span><span class="s1">^\star$&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">X</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{POI}</span><span class="s1">^\star$&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ig</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
     <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">Q_GR_store</span><span class="p">[:,</span><span class="n">ig</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$Q_</span><span class="se">{{</span><span class="s1">GR</span><span class="si">{</span><span class="n">ig</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">}}</span><span class="s1">^\star$&#39;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">Q_STATCOM_store</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{ST}</span><span class="s1">^\star$&#39;</span><span class="p">)</span>
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$V_</span><span class="si">{POI}</span><span class="s1">$&#39;</span><span class="p">)</span>
 
 <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Reactive Power (Mvar)&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span><span class="mi">35</span><span class="p">])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">35</span><span class="p">])</span>
 
 <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage (p.u.)&#39;</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
@@ -1778,7 +1660,254 @@ p_m_ref_GRI = -0.19
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="_images/simu_21_0.svg" src="_images/simu_21_0.svg" /></div>
+<img alt="_images/simu_profes_13_0.svg" src="_images/simu_profes_13_0.svg" /></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mi">4</span><span class="o">+</span><span class="mi">6</span><span class="o">+</span><span class="mi">5</span><span class="o">+</span><span class="mf">4.5</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>19.5
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P_GR</span> <span class="o">=</span> <span class="mf">7e6</span>
+<span class="n">Q_GR</span> <span class="o">=</span> <span class="mf">0e6</span>
+<span class="n">S_GR</span> <span class="o">=</span> <span class="mf">8e6</span>
+<span class="n">P_GR_n</span> <span class="o">=</span> <span class="mf">6e6</span>
+<span class="n">P_GRI</span> <span class="o">=</span> <span class="o">-</span><span class="mf">100e6</span>
+<span class="n">pr</span><span class="o">.</span><span class="n">initialize</span><span class="p">([{</span><span class="s1">&#39;P_GR1&#39;</span><span class="p">:</span> <span class="mf">4e6</span><span class="p">,</span> <span class="s1">&#39;Q_GR1&#39;</span><span class="p">:</span> <span class="n">Q_GR</span><span class="p">,</span>
+                <span class="s1">&#39;P_GR2&#39;</span><span class="p">:</span> <span class="mf">6e6</span><span class="p">,</span> <span class="s1">&#39;Q_GR2&#39;</span><span class="p">:</span> <span class="n">Q_GR</span><span class="p">,</span>
+                <span class="s1">&#39;P_GR3&#39;</span><span class="p">:</span> <span class="mf">5e6</span><span class="p">,</span> <span class="s1">&#39;Q_GR3&#39;</span><span class="p">:</span> <span class="n">Q_GR</span><span class="p">,</span>
+                <span class="s1">&#39;P_GR4&#39;</span><span class="p">:</span><span class="mf">4.5e6</span><span class="p">,</span> <span class="s1">&#39;Q_GR4&#39;</span><span class="p">:</span> <span class="n">Q_GR</span><span class="p">,</span>
+                <span class="s1">&#39;P_PMV&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s1">&#39;Q_PMV&#39;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+                <span class="s1">&#39;P_GRI&#39;</span><span class="p">:</span> <span class="n">P_GRI</span><span class="p">,</span> <span class="s1">&#39;Q_GRI&#39;</span><span class="p">:</span> <span class="mf">50e6</span><span class="p">,</span><span class="s1">&#39;S_n_GRI&#39;</span><span class="p">:</span><span class="mf">200.0e6</span><span class="p">}],</span> <span class="mi">1</span><span class="p">)</span> 
+
+<span class="n">K_g</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">220e6</span> <span class="c1"># gain of the plant</span>
+
+<span class="n">T_s</span> <span class="o">=</span> <span class="mf">0.1</span>
+<span class="n">times</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="n">T_s</span><span class="p">)</span>
+<span class="n">N_t</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">times</span><span class="p">)</span>
+<span class="n">N_x</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="c1"># controller</span>
+<span class="n">K_p</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0e7</span>
+<span class="n">K_i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">T_s</span><span class="o">*</span><span class="n">K_g</span><span class="p">)</span>
+
+<span class="c1"># initial conditions</span>
+<span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">xi</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">Q_POI_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">Q_GR1_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">Q_GR2_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">Q_GR3_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">Q_GR4_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">Q_STATCOM_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">P_BESS_ref</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">V_POI_ref</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">)</span>
+<span class="n">Q_GR_store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">Q_STATCOM_store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N_t</span><span class="p">,</span><span class="n">N_x</span><span class="p">))</span>
+<span class="n">it</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">times</span><span class="p">:</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xi</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_POI_ref</span>
+    
+    <span class="k">if</span> <span class="n">t</span><span class="o">&gt;</span><span class="mf">100.0</span><span class="p">:</span>
+        <span class="n">V_POI_ref</span> <span class="o">=</span> <span class="mf">1.05</span>
+    <span class="k">if</span> <span class="n">t</span><span class="o">&gt;</span><span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">P_GRI</span> <span class="o">=</span> <span class="o">-</span><span class="mf">150e6</span> 
+        
+    <span class="c1"># Plant</span>
+    <span class="k">for</span> <span class="n">ig</span><span class="p">,</span><span class="n">q</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">5</span><span class="p">),[</span><span class="n">Q_GR1_ref</span><span class="p">,</span><span class="n">Q_GR2_ref</span><span class="p">,</span><span class="n">Q_GR3_ref</span><span class="p">,</span><span class="n">Q_GR4_ref</span><span class="p">]):</span>
+        <span class="n">P_GR</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;P_GR</span><span class="si">{</span><span class="n">ig</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+        <span class="n">Q_GR_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">S_GR</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">P_GR</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">q</span><span class="o">&gt;</span> <span class="n">Q_GR_max</span><span class="p">:</span> <span class="n">q</span> <span class="o">=</span>  <span class="n">Q_GR_max</span>
+        <span class="k">if</span> <span class="n">q</span><span class="o">&lt;-</span><span class="n">Q_GR_max</span><span class="p">:</span> <span class="n">q</span> <span class="o">=</span> <span class="o">-</span><span class="n">Q_GR_max</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Q_GR</span><span class="si">{</span><span class="n">ig</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span><span class="n">q</span><span class="p">)</span>   
+        <span class="n">Q_GR_store</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="n">ig</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">q</span>
+    <span class="n">pr</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;P_GRI&#39;</span><span class="p">,</span><span class="n">P_GRI</span><span class="p">)</span>    
+    <span class="n">Q_STATCOM_store</span><span class="p">[</span><span class="n">it</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">Q_STATCOM_ref</span>
+    <span class="n">V_POI</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">)</span>
+    
+    
+    <span class="c1"># run</span>
+    <span class="n">pr</span><span class="o">.</span><span class="n">run</span><span class="p">([{</span><span class="s1">&#39;t_end&#39;</span><span class="p">:</span><span class="n">t</span><span class="p">,</span><span class="s1">&#39;Q_PMV&#39;</span><span class="p">:</span><span class="n">Q_STATCOM_ref</span><span class="p">,</span> <span class="s1">&#39;P_PMV&#39;</span><span class="p">:</span><span class="n">P_BESS_ref</span><span class="p">}])</span>
+    
+    
+    <span class="c1"># Controller</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">V_POI_ref</span> <span class="o">-</span> <span class="n">V_POI</span>
+    <span class="n">xi</span> <span class="o">=</span> <span class="n">xi</span> <span class="o">+</span> <span class="n">T_s</span><span class="o">*</span><span class="n">error</span>
+    <span class="n">Q_POI_ref</span> <span class="o">=</span> <span class="n">K_p</span><span class="o">*</span><span class="n">error</span> <span class="o">+</span> <span class="n">K_i</span><span class="o">*</span><span class="n">xi</span>
+    <span class="n">p_poi</span> <span class="o">=</span> <span class="n">gt</span><span class="o">.</span><span class="n">get_line_s</span><span class="p">(</span><span class="n">pr</span><span class="p">,</span><span class="s1">&#39;POI&#39;</span><span class="p">,</span><span class="s1">&#39;GRI&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">real</span>
+    <span class="k">if</span> <span class="n">p_poi</span><span class="o">/</span><span class="mi">4</span> <span class="o">&lt;</span> <span class="n">S_GR</span><span class="p">:</span> 
+        <span class="n">q_gr_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">S_GR</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">p_poi</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span> <span class="n">q_gr_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">S_GR</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">P_GR_n</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> 
+    <span class="n">Q_GR</span> <span class="o">=</span> <span class="n">Q_POI_ref</span><span class="o">/</span><span class="mi">4</span>
+    <span class="k">if</span> <span class="n">Q_GR</span><span class="o">&gt;</span> <span class="n">q_gr_max</span><span class="p">:</span> <span class="n">Q_GR</span> <span class="o">=</span>  <span class="n">q_gr_max</span>
+    <span class="k">if</span> <span class="n">Q_GR</span><span class="o">&lt;-</span><span class="n">q_gr_max</span><span class="p">:</span> <span class="n">Q_GR</span> <span class="o">=</span> <span class="o">-</span><span class="n">q_gr_max</span>
+    <span class="n">Q_GR1_ref</span> <span class="o">=</span> <span class="n">Q_GR</span>
+    <span class="n">Q_GR2_ref</span> <span class="o">=</span> <span class="n">Q_GR</span>
+    <span class="n">Q_GR3_ref</span> <span class="o">=</span> <span class="n">Q_GR</span>
+    <span class="n">Q_GR4_ref</span> <span class="o">=</span> <span class="n">Q_GR</span>
+    <span class="n">Q_STATCOM_ref</span> <span class="o">=</span> <span class="n">Q_POI_ref</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">Q_GR</span> 
+    
+    <span class="n">omega</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;omega_GRI&#39;</span><span class="p">)</span>
+    <span class="n">p_f</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="mf">0.05</span><span class="o">*</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">omega</span><span class="p">)</span>
+    <span class="n">P_BESS_ref</span> <span class="o">=</span> <span class="n">p_f</span><span class="o">*</span><span class="mf">50e6</span>
+    <span class="n">it</span> <span class="o">+=</span> <span class="mi">1</span> 
+
+<span class="n">pr</span><span class="o">.</span><span class="n">post</span><span class="p">()</span>
+    
+<span class="n">fig2</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">nrows</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ncols</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span><span class="n">sharex</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;omega_GRI&#39;</span><span class="p">)</span><span class="o">*</span><span class="mi">50</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;freq. (Hz)&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">ig</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;P_GR</span><span class="si">{</span><span class="n">ig</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$P_</span><span class="se">{{</span><span class="s1">GR</span><span class="si">{</span><span class="n">ig</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;P_PMV&#39;</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$P_</span><span class="se">{{</span><span class="s1">PMV</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">)</span>
+<span class="c1">#axes[0].set_ylabel(&#39;Reactive Power (Mvar)&#39;)</span>
+<span class="c1">#axes[0].set_ylim([-5,35])</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage (p.u.)&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="n">axes</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span><span class="n">ncol</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">30</span><span class="p">])</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Time (s)&#39;</span><span class="p">)</span>
+<span class="n">fig2</span><span class="o">.</span><span class="n">align_ylabels</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">UnboundLocalError</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">9</span><span class="o">-</span><span class="n">e30b739e3274</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="g g-Whitespace">     </span><span class="mi">92</span> 
+<span class="g g-Whitespace">     </span><span class="mi">93</span> <span class="k">for</span> <span class="n">ig</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+<span class="ne">---&gt; </span><span class="mi">94</span>     <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;P_GR</span><span class="si">{</span><span class="n">ig</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$P_</span><span class="se">{{</span><span class="s1">GR</span><span class="si">{</span><span class="n">ig</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">95</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;P_PMV&#39;</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;$P_</span><span class="se">{{</span><span class="s1">PMV</span><span class="se">}}</span><span class="s1">$&#39;</span><span class="p">)</span>
+<span class="g g-Whitespace">     </span><span class="mi">96</span> <span class="c1">#axes[0].set_ylabel(&#39;Reactive Power (Mvar)&#39;)</span>
+
+<span class="nn">~\anaconda3\envs\workenv\lib\site-packages\pydae\systems\ier\proyecto.py</span> in <span class="ni">get_values</span><span class="nt">(self, name)</span>
+<span class="g g-Whitespace">    </span><span class="mi">549</span>             <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">[:,</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span>
+<span class="g g-Whitespace">    </span><span class="mi">550</span> 
+<span class="ne">--&gt; </span><span class="mi">551</span>         <span class="k">return</span> <span class="n">values</span>
+<span class="g g-Whitespace">    </span><span class="mi">552</span> 
+<span class="g g-Whitespace">    </span><span class="mi">553</span>     <span class="k">def</span> <span class="nf">get_mvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">names</span><span class="p">):</span>
+
+<span class="ne">UnboundLocalError</span>: local variable &#39;values&#39; referenced before assignment
+</pre></div>
+</div>
+<img alt="_images/simu_profes_15_1.svg" src="_images/simu_profes_15_1.svg" /></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pr</span><span class="o">.</span><span class="n">report_x</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>delta_GRI = -70.30
+omega_GRI =  0.99
+e1q_GRI =  0.61
+e1d_GRI =  0.54
+v_c_GRI =  0.99
+p_m_GRI =  0.57
+xi_m_GRI = -405.26
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pr</span><span class="o">.</span><span class="n">get_value</span><span class="p">(</span><span class="s1">&#39;v_f_GRI&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>1.2443252905076136
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">S_GR</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="p">(</span><span class="n">p_poi</span><span class="o">/</span><span class="mi">4</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>-11806475818484.578
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p_poi</span><span class="o">/</span><span class="mf">1e6</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>34.82676575704028
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="mf">43750000000000.0</span><span class="o">/</span><span class="mf">1e6</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>43750000.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">S_GR</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>8000000.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">P_GR</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>4500000.0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">S_GR</span><span class="o">**</span><span class="mi">2</span> <span class="o">-</span> <span class="n">P_GR</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>6614378.277661476
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -1812,7 +1941,6 @@ p_m_ref_GRI = -0.19
     
     <div class='prev-next-bottom'>
         
-    <a class='left-prev' id="prev-link" href="intro.html" title="previous page">Simulador de sistema de potencia</a>
 
     </div>
     <footer class="footer mt-5 mt-md-0">
