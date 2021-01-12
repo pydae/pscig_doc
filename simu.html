@@ -1489,7 +1489,7 @@ p_m_ref_GRI = -0.19
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(223.95663836147085-64.60038474431991j)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(223.95663836143078-64.60038474433881j)
 </pre></div>
 </div>
 </div>
@@ -1501,7 +1501,7 @@ p_m_ref_GRI = -0.19
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(19317132.164571136+18061567.84765373j)
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>(19317132.16456763+18061567.847651966j)
 </pre></div>
 </div>
 </div>
@@ -1526,10 +1526,7 @@ p_m_ref_GRI = -0.19
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>V_POI antes del cambio: 1.0369640239742806
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>V_POI después del cambio: 1.0545851136728754
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>V_POI antes del cambio: 1.0369640239742755
 </pre></div>
 </div>
 </div>
@@ -1548,23 +1545,7 @@ p_m_ref_GRI = -0.19
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">UnboundLocalError</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="o">&lt;</span><span class="n">ipython</span><span class="o">-</span><span class="nb">input</span><span class="o">-</span><span class="mi">9</span><span class="o">-</span><span class="mi">794757</span><span class="n">c5a77b</span><span class="o">&gt;</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="g g-Whitespace">      </span><span class="mi">2</span> 
-<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;V_POI&#39;</span><span class="p">),</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$V_</span><span class="si">{POI}</span><span class="s1">$&#39;</span><span class="p">)</span>
-<span class="ne">----&gt; </span><span class="mi">4</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">T</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="s1">&#39;Q_PMV&#39;</span><span class="p">)</span><span class="o">/</span><span class="mf">1e6</span><span class="p">,</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;$Q_</span><span class="si">{PMV}</span><span class="s1">$&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Voltage (p.u.)&#39;</span><span class="p">)</span>
-<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Reactive Power (Mvar)&#39;</span><span class="p">)</span>
-
-<span class="nn">~\anaconda3\envs\workenv\lib\site-packages\pydae\systems\ier\proyecto.py</span> in <span class="ni">get_values</span><span class="nt">(self, name)</span>
-<span class="g g-Whitespace">    </span><span class="mi">549</span>             <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">[:,</span><span class="bp">self</span><span class="o">.</span><span class="n">outputs_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">name</span><span class="p">)]</span>
-<span class="g g-Whitespace">    </span><span class="mi">550</span> 
-<span class="ne">--&gt; </span><span class="mi">551</span>         <span class="k">return</span> <span class="n">values</span>
-<span class="g g-Whitespace">    </span><span class="mi">552</span> 
-<span class="g g-Whitespace">    </span><span class="mi">553</span>     <span class="k">def</span> <span class="nf">get_mvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">names</span><span class="p">):</span>
-
-<span class="ne">UnboundLocalError</span>: local variable &#39;values&#39; referenced before assignment
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 0, &#39;Time (s)&#39;)
 </pre></div>
 </div>
 <img alt="_images/simu_17_1.svg" src="_images/simu_17_1.svg" /></div>
